@@ -20,6 +20,9 @@
   "bugs": {
     "url": "https://github.com/nzigel/DataofMe/issues"
   },
+  "engines" : { 
+      "node" : "^6.9.1" 
+    },
   "homepage": "https://github.com/nzigel/DataofMe#readme",
   "dependencies": {
     "botbuilder": "^3.8.4",
