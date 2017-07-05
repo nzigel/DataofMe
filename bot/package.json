@@ -23,6 +23,9 @@
   "homepage": "https://github.com/nzigel/DataofMe#readme",
   "dependencies": {
     "botbuilder": "^3.8.4",
-    "restify": "^4.3.0"
+    "botbuilder-azure": "^3.0.2",
+    "documentdb": "^1.12.0",
+    "dotenv-extended": "^2.0.1",
+    "restify": "^5.0.0"
   }
 }
