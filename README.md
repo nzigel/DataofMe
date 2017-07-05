@@ -1,6 +1,6 @@
 # Take Control of the Data of You
 
-Over the last four years I have been collecting my personal health data from a variety of wearable devices. I'm going to demonstrate my current set up and share the code that I have written with Azure Functions, Azure Cosmos DB, Azure ML Studio, the Microsoft Bot Framework, LUIS.ai and Power BI. I normally work in C# but I chose to use node.js for this project as a learning opportunity. There are many opportunities to improve the quality of my javascript code but I have included it here for purpose of demonstration to accompany a recent talk on this subject that I gave at NDC Oslo. If you are a garmin user (that captures active heart rate data) you should be able to follow these instructions and build out this solution for youself using your own data. If you do so I'm really interested in [getting your feedback](http://twitter.com/nzigel) on how it works. I will link to the talk here when it becomes available.
+Over the last four years I have been collecting my personal health data from a variety of wearable devices. I'm going to demonstrate my current set up and share the code that I have written with Azure Functions, Azure Cosmos DB, Azure ML Studio, the Microsoft Bot Framework, LUIS.ai and Power BI. I normally work in C# but I chose to use node.js for this project as a learning opportunity. There are many opportunities to improve the quality of my javascript code but I have included it here for purpose of demonstration to accompany a recent talk on this subject that I gave at NDC Oslo. If you are a garmin user (that captures active heart rate data) you should be able to follow these instructions and build out this solution for youself using your own data. If you do so I'm really interested in [getting your feedback](http://twitter.com/nzigel) on how it works.<br>[![Watch my talk from NDC Oslo](./images/ndcVideo.png)](https://vimeo.com/223984825)
 
 ## Background
 There is a lot of value in the health data that you collect from wearable devices. With enough data you can gain insight like predicting when you might be getting sick and be warned beforehand so that you can make changes to avoid the event. You can also ask questions of your data like what was your resting heart rate last month and how much exercise you have been getting. The data that you are collecting from wearables is your data and I'm going to show you how I collect it and make it work for me.
@@ -143,7 +143,7 @@ By storing the daily health data in Cosmos DB / Document DB I am able to access 
 
 
 ### Upload CSV data
-Now that we've got our database and collection set up, let's go ahead and push our csv data up. This can be done programatically, but for the sake of simplicity I'm going to use the Document DB Data Migration Tool (documented here https://azure.microsoft.com/en-us/documentation/articles/documentdb-import-data/).
+Now that we've got our database and collection set up, let's go ahead and push our csv data up. This can be done programatically, but for the sake of simplicity I'm going to use the [Document DB Data Migration Tool](https://azure.microsoft.com/en-us/documentation/articles/documentdb-import-data/).
 
 1. Once you've got the tool, navigate to the [garminExport.csv file](./sampleData/garminExport.csv): 
 
@@ -155,16 +155,58 @@ Now that we've got our database and collection set up, let's go ahead and push o
 
         <img src="./images/dtui2.PNG" alt="Screenshot" style="width: 500px; padding-left: 40px;"/>
 
-    2. Be sure to add Database = <DatabaseName>; to your connection string
+    2. Be sure to add Database = db; to your connection string
 
         <img src="./images/dtui3.PNG" alt="Screenshot" style="width: 500px; padding-left: 40px;"/>
 
-    3. Then upload your data: 
-
-        <img src="./images/dtui4.PNG" alt="Screenshot" style="width: 500px; padding-left: 40px;"/>
-
-    To see that our data has uploaded, we can go back to the portal, click query explorer and run the default query `SELECT * FROM c`:<br>
+    3. Then upload your data. To see that our data has uploaded, we can go back to the portal, click query explorer and run the default query `SELECT * FROM c`:<br>
         <img src="./images/docDBExplorer.PNG" alt="Screenshot" style="width: 800px; padding-left: 40px;"/>
+
+### Set the Index and understand Query language for the Database
+As discussed previously when I presented this solution at NDC Oslo I was using Azure Search on top of my Document DB for the bot to talk to and was performing calculations like average and max in code. Due to the nature of my data and the lack of string fields (with the exception of dates and virus fields which aren't really strings) it meant that I was better off querying the Document DB directly and not using Azure search, especially since the data in DocDB was only updated once an hour.
+
+As a result I needed to make some changes to the database index in the way I was working with strings to make it work.<br>
+
+<img src="./images/indexDocDB.PNG" alt="Screenshot" style="width: 500px; padding-left: 40px;"/><br>
+
+I updated my indexing policy to move from hash indexes to range indexes for strings
+
+``` javascript
+{
+    "indexingMode": "consistent",
+    "automatic": true,
+    "includedPaths": [
+        {
+            "path": "/*",
+            "indexes": [
+                {
+                    "kind": "Range",
+                    "dataType": "Number",
+                    "precision": -1
+                },
+                {
+                    "kind": "Range",
+                    "dataType": "String",
+                    "precision": -1
+                }
+            ]
+        }
+    ],
+    "excludedPaths": []
+}
+```
+This enables me to perform queries like
+
+``` javascript
+SELECT AVG(c.distance) FROM c where (c.day = "Saturday") and ((c.dateLogged >= "2016-01-01T00:00:00.0000000Z") and (c.dateLogged < "2017-01-01T00:00:00.0000000Z"))
+```
+to calculate the average distance that I travelled on Saturday last year
+
+<img src="./images/average.PNG" alt="Screenshot" style="width: 500px; padding-left: 40px;"/><br>
+
+You can read more about [Azure Cosmos DB indexing policies here](https://docs.microsoft.com/en-us/azure/cosmos-db/indexing-policies)
+
+Also try the [Query playground](https://www.documentdb.com/sql/demo) and check out the [Document DB SQL reference](https://docs.microsoft.com/en-us/azure/cosmos-db/documentdb-sql-query-reference)
 
 ### Log in the Database the days when you are Sick
 
@@ -693,6 +735,10 @@ our error handling.
 
 Finally, let's test our bot out. Either [deploy your bot to an Azure web app](https://docs.microsoft.com/en-us/bot-framework/deploy-bot-overview) and fill in the .env variables in the portal. I will demonstrate the bot working in the bot framework emulator, but if deployed, this bot could be [enabled on several different channels like Skype, Slack and Facebook Messenger](https://docs.microsoft.com/en-us/bot-framework/portal-configure-channels)<br>
 
+Running in the Bot Emulator:<br>
 <img src="./images/botEmulator.PNG" alt="Screenshot" style="width: 800px; padding-left: 40px;"/>
+
+Running as a bot on Facebook Messenger on my phone:<br>
+<img src="./images/facebookMsg.PNG" alt="Screenshot" style="width: 500px; padding-left: 40px;"/>
 
 I have enjoyed collecting data and building this passion project out over the last four years. There is a lot of moving parts but it certainly helps me now stay healthy and gain insight into my personal state of well being. I'm facinated to learn how you have taken this work and applied it to your own data and your own data and your own health journey.
