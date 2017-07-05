@@ -1,0 +1,28 @@
+{
+  "name": "nigelbot",
+  "version": "1.0.0",
+  "description": "a both that tells me information about my health from data collected from wearable devices",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nzigel/DataofMe.git"
+  },
+  "keywords": [
+    "Garmin",
+    "Untappd",
+    "Azure"
+  ],
+  "author": "Nigel Parker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nzigel/DataofMe/issues"
+  },
+  "homepage": "https://github.com/nzigel/DataofMe#readme",
+  "dependencies": {
+    "botbuilder": "^3.8.4",
+    "restify": "^4.3.0"
+  }
+}
