@@ -736,9 +736,9 @@ our error handling.
 Finally, let's test our bot out. Either [deploy your bot to an Azure web app](https://docs.microsoft.com/en-us/bot-framework/deploy-bot-overview) and fill in the .env variables in the portal. I will demonstrate the bot working in the bot framework emulator, but if deployed, this bot could be [enabled on several different channels like Skype, Slack and Facebook Messenger](https://docs.microsoft.com/en-us/bot-framework/portal-configure-channels)<br>
 
 Running in the Bot Emulator:<br>
-<img src="./images/botEmulator.PNG" alt="Screenshot" style="width: 500px; padding-left: 40px;"/>
+<img src="./images/botEmulator.PNG" alt="Screenshot" style="width: 250px; padding-left: 40px;"/>
 
 Running as a bot on Facebook Messenger on my phone:<br>
-<img src="./images/fbmsgr.png" alt="Screenshot" style="width: 500px; padding-left: 40px;"/>
+<img src="./images/fbmsgr.png" alt="Screenshot" style="width: 250px; padding-left: 40px;"/>
 
 I have enjoyed collecting data and building this passion project out over the last four years. There is a lot of moving parts but it certainly helps me now stay healthy and gain insight into my personal state of well being. I'm facinated to learn how you have taken this work and applied it to your own data and your own data and your own health journey.
