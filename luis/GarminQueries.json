@@ -66,6 +66,12 @@
     },
     {
       "name": "virus"
+    },
+    {
+      "name": "vo2max"
+    },
+    {
+      "name": "weight"
     }
   ],
   "composites": [],
@@ -100,6 +106,18 @@
       "activated": true
     },
     {
+      "name": "least",
+      "mode": true,
+      "words": "least,min,minimum,lowest,smallest",
+      "activated": true
+    },
+    {
+      "name": "most",
+      "mode": true,
+      "words": "most,highest,max,maximum,utmost,top,topmost",
+      "activated": true
+    },
+    {
       "name": "predict",
       "mode": true,
       "words": "predict,anticipate,foresee,forecast,estimate",
@@ -109,6 +127,18 @@
       "name": "Sick",
       "mode": true,
       "words": "sick,virus,unwell,rundown,fatigued,lethargic,ill,syk,uvel",
+      "activated": true
+    },
+    {
+      "name": "vo2max",
+      "mode": true,
+      "words": "vo2max,vo2 max,vo2,anaerobic threshold,fitness,endurance,performance,maximal oxygen consumption,maximal oxygen uptake,peak oxygen uptake,maximal aerobic capacity",
+      "activated": true
+    },
+    {
+      "name": "weight",
+      "mode": true,
+      "words": "weight,heavy,bmi,body mass,heaviest,lightest",
       "activated": true
     }
   ],
@@ -1023,6 +1053,81 @@
           "entity": "virus",
           "startPos": 27,
           "endPos": 30
+        }
+      ]
+    },
+    {
+      "text": "what was my peak vo2max this year",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "vo2max",
+          "startPos": 17,
+          "endPos": 22
+        },
+        {
+          "entity": "most",
+          "startPos": 12,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "what was my average weight this year",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "average",
+          "startPos": 12,
+          "endPos": 18
+        },
+        {
+          "entity": "weight",
+          "startPos": 20,
+          "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "when was i the heaviest this year",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "weight",
+          "startPos": 15,
+          "endPos": 22
+        }
+      ]
+    },
+    {
+      "text": "what was my lowest weight this year",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "weight",
+          "startPos": 19,
+          "endPos": 24
+        },
+        {
+          "entity": "least",
+          "startPos": 12,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "what was my highest weight this year",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "most",
+          "startPos": 12,
+          "endPos": 18
+        },
+        {
+          "entity": "weight",
+          "startPos": 20,
+          "endPos": 25
         }
       ]
     }

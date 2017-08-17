@@ -122,7 +122,7 @@ function dateRngChk(er,ent){
 
 function setFieldOperatorType (er, ent) {
 
-    var ftStr = chkEnt(er,ent,'distance')?'distance':chkEnt(er,ent,'floors')?'floors':chkEnt(er,ent,'sleep')?'sleepDuration':chkEnt(er,ent,'beers')?'beers':'*';
+    var ftStr = chkEnt(er,ent,'distance')?'distance':chkEnt(er,ent,'floors')?'floors':chkEnt(er,ent,'sleep')?'sleepDuration':chkEnt(er,ent,'beers')?'beers':chkEnt(er,ent,'weight')?'weight':chkEnt(er,ent,'vo2max')?'VO2MAX':'*';
     var opType = chkEnt(er,ent,'average')?'AVG':chkEnt(er,ent,'least')?'MIN':chkEnt(er,ent,'most')?'MAX':chkEnt(er,ent,'count')?'SUM':'*';
 
     if ((chkEnt(er,ent,'heartRate::minHeartRate'))||(chkEnt(er,ent,'heartRate::maxHeartRate'))||(chkEnt(er,ent,'heartRate::restingHeartRate'))) {
@@ -149,6 +149,20 @@ function setFieldOperatorType (er, ent) {
     else if (ftStr == '*') {
         // check for vigourIntensity and moderateIntensity minutes
         ftStr = chkEnt(er,ent,'activeMinutes::veryActiveMinutes')?'vigourousIntensityMinutes':chkEnt(er,ent,'activeMinutes::moderateActiveMinutes')?'moderateIntensityMins':'*';
+    }
+    else if ((opType == '*')&&(ftStr=='weight')) {
+        // we have a weight check for heaviest and lightest for max and min operators
+        var weightType = er.findAllEntities(ent, 'weight');
+        if (weightType.length>0) {
+            if (weightType[0].entity.toLowerCase()=='heaviest') {
+                // we have a heaviest weight request set opType to Max
+                opType='MAX';
+            }
+            else if (weightType[0].entity.toLowerCase()=='lightest') {
+                // we have a lightest weight request set opType to Min
+                opType='MIN';
+            }
+        }
     }
 
     var qObj = {
@@ -274,7 +288,9 @@ module.exports = {
                     case 'maxHeartRate': val = val.maxHeartRate; break;
                     case 'restHeartRate': val = val.restHeartRate; break;
                     case 'vigourousIntensityMinutes' : val = val.vigourousIntensityMinutes; break;
-                    case 'beers': val = val.beers; 
+                    case 'beers': val = val.beers; break;
+                    case 'weight': val = val.weight; break;
+                    case 'VO2MAX': val = val.VO2MAX; break;
                 }
             }
         }
@@ -310,18 +326,20 @@ module.exports = {
 
                     var valStr = val.toFixed(1);
                     var intStr = val.toFixed(0);
-                    var avgStr = `on average you `;
+                    var avgStr = `on average you`;
                     var dayStr = ` per day`;
                     
                     switch (ft) {
-                        case 'distance': rStr=((op=='MIN')||(op=='MAX'))?`you travelled ${valStr} kms on ${dateStr}`:(op=='AVG')?`${avgStr}travelled ${valStr} kms${dayStr}`:`total distance: ${valStr} kms`; break;
-                        case 'floors': rStr=((op=='MIN')||(op=='MAX'))?`you climbed ${intStr} floors on ${dateStr}`:(op=='AVG')?`${avgStr}climbed ${intStr} floors${dayStr}`:`total floors climbed: ${intStr}`; break;
-                        case 'sleepDuration': rStr=((op=='MIN')||(op=='MAX'))?`you slept ${valStr} hours on ${dateStr}`:(op=='AVG')?`${avgStr}got ${valStr} hours sleep${dayStr}`:`total sleep: ${valStr} hours`; break;
-                        case 'minHeartRate': rStr=((op=='MIN')||(op=='MAX'))?`${intStr} bpm on ${dateStr}`:(op=='AVG')?`${avgStr}your lowest heart rate was ${intStr} bpm${dayStr}`:`lowest heart rate: ${intStr} bpm`; break;
-                        case 'maxHeartRate': rStr=((op=='MIN')||(op=='MAX'))?`${intStr} bpm on ${dateStr}`:(op=='AVG')?`${avgStr}your highest heart rate was ${intStr} bpm${dayStr}`:`highest heart rate: ${intStr} bpm`; break;
-                        case 'restHeartRate': rStr=((op=='MIN')||(op=='MAX'))?`${intStr} bpm on ${dateStr}`:(op=='AVG')?`${avgStr}your resting heart rate was ${intStr} bpm${dayStr}`:`resting heart rate: ${intStr} bpm`; break;
+                        case 'distance': rStr=((op=='MIN')||(op=='MAX'))?`you travelled ${valStr} kms on ${dateStr}`:(op=='AVG')?`${avgStr} travelled ${valStr} kms${dayStr}`:`total distance: ${valStr} kms`; break;
+                        case 'floors': rStr=((op=='MIN')||(op=='MAX'))?`you climbed ${intStr} floors on ${dateStr}`:(op=='AVG')?`${avgStr} climbed ${intStr} floors${dayStr}`:`total floors climbed: ${intStr}`; break;
+                        case 'sleepDuration': rStr=((op=='MIN')||(op=='MAX'))?`you slept ${valStr} hours on ${dateStr}`:(op=='AVG')?`${avgStr} got ${valStr} hours sleep${dayStr}`:`total sleep: ${valStr} hours`; break;
+                        case 'minHeartRate': rStr=((op=='MIN')||(op=='MAX'))?`${intStr} bpm on ${dateStr}`:(op=='AVG')?`${avgStr}r lowest heart rate was ${intStr} bpm${dayStr}`:`lowest heart rate: ${intStr} bpm`; break;
+                        case 'maxHeartRate': rStr=((op=='MIN')||(op=='MAX'))?`${intStr} bpm on ${dateStr}`:(op=='AVG')?`${avgStr}r highest heart rate was ${intStr} bpm${dayStr}`:`highest heart rate: ${intStr} bpm`; break;
+                        case 'restHeartRate': rStr=((op=='MIN')||(op=='MAX'))?`${intStr} bpm on ${dateStr}`:(op=='AVG')?`${avgStr}r resting heart rate was ${intStr} bpm${dayStr}`:`resting heart rate: ${intStr} bpm`; break;
                         case 'vigourousIntensityMinutes': rStr=((op=='MIN')||(op=='MAX'))?`you exercised intensly for ${intStr} minutes on ${dateStr}`:(op=='AVG')?`${intStr}exercised intensly for ${intStr} minutes${dayStr}`:(dateStr!='')?`you exercised intensly for ${intStr} minutes on ${dateStr}`:`total minutes of intense exercise: ${intStr}`; break;
-                        case 'beers': rStr=((op=='MIN')||(op=='MAX'))?`you drank ${intStr} beers on ${dateStr}`:(op=='AVG')?`${avgStr}drank ${intStr} beers${dayStr}`:`total beers: ${intStr}`; 
+                        case 'beers': rStr=((op=='MIN')||(op=='MAX'))?`you drank ${intStr} beers on ${dateStr}`:(op=='AVG')?`${avgStr} drank ${intStr} beers${dayStr}`:`total beers: ${intStr}`; break;
+                        case 'VO2MAX': rStr=((op=='MIN')||(op=='MAX'))?`your VO2MAX was ${intStr} on ${dateStr}`:(op=='AVG')?`${avgStr}r VO2MAX was ${intStr}`:``; break; // counting VO2MAX doesn't make sense
+                        case 'weight': rStr=((op=='MIN')||(op=='MAX'))?`your weight was ${intStr} kg on ${dateStr}`:(op=='AVG')?`${avgStr}r weight was ${intStr}kg`:``; break; // counting weight doesn't make sense
                     }
                     
                 }
