@@ -211,6 +211,7 @@ module.exports = {
 
         if ((ft=='vigourousIntensityMinutes')&&(chkEnt(er,ent,'last'))) {
             // looking for the last time I exercised intensly 
+            //define intense exercise as vigorous intensity minutes over 10 minutes
 
             operatorStr = 'TOP 1 *';
             whereQuery += (whereQuery=='')?`WHERE c.${ft} > 10`:` and (c.${ft} > 10)`; 

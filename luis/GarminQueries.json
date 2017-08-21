@@ -108,13 +108,13 @@
     {
       "name": "least",
       "mode": true,
-      "words": "least,min,minimum,lowest,smallest",
+      "words": "least,min,minimum,lowest,smallest,low,worst",
       "activated": true
     },
     {
       "name": "most",
       "mode": true,
-      "words": "most,highest,max,maximum,utmost,top,topmost",
+      "words": "most,highest,max,maximum,utmost,top,topmost,peak,greatest,best,high",
       "activated": true
     },
     {
@@ -132,7 +132,7 @@
     {
       "name": "vo2max",
       "mode": true,
-      "words": "vo2max,vo2 max,vo2,anaerobic threshold,fitness,endurance,performance,maximal oxygen consumption,maximal oxygen uptake,peak oxygen uptake,maximal aerobic capacity",
+      "words": "vo2max,vo2 max,vo2,anaerobic threshold,fitness,endurance,performance,maximal oxygen consumption,maximal oxygen uptake,peak oxygen uptake,maximal aerobic capacity,fit,fittest",
       "activated": true
     },
     {
@@ -1057,22 +1057,6 @@
       ]
     },
     {
-      "text": "what was my peak vo2max this year",
-      "intent": "GetGarminData",
-      "entities": [
-        {
-          "entity": "vo2max",
-          "startPos": 17,
-          "endPos": 22
-        },
-        {
-          "entity": "most",
-          "startPos": 12,
-          "endPos": 15
-        }
-      ]
-    },
-    {
       "text": "what was my average weight this year",
       "intent": "GetGarminData",
       "entities": [
@@ -1128,6 +1112,80 @@
           "entity": "weight",
           "startPos": 20,
           "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "what was my average sleep this week",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "average",
+          "startPos": 12,
+          "endPos": 18
+        },
+        {
+          "entity": "sleep",
+          "startPos": 20,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "how many flights of stairs did i climb on average during the week this year",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "floors",
+          "startPos": 9,
+          "endPos": 25
+        },
+        {
+          "entity": "average",
+          "startPos": 42,
+          "endPos": 48
+        },
+        {
+          "entity": "dayoftheweek",
+          "startPos": 50,
+          "endPos": 64
+        },
+        {
+          "entity": "count",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "what was my lowest vo2max this year",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "vo2max",
+          "startPos": 19,
+          "endPos": 24
+        },
+        {
+          "entity": "least",
+          "startPos": 12,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "what was my peak fitness this year",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "vo2max",
+          "startPos": 17,
+          "endPos": 23
+        },
+        {
+          "entity": "most",
+          "startPos": 12,
+          "endPos": 15
         }
       ]
     }
