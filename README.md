@@ -741,4 +741,6 @@ Running in the Bot Emulator:<br>
 Running as a bot on Facebook Messenger on my phone:<br>
 <img src="./images/fbmsgr.png" alt="Screenshot" style="width: 250px; padding-left: 40px;"/>
 
+I have recently experimented with running the bot on Amazon Alexa as a custom skill - this enables me to talk to the bot using natural language and having the response read back to me. [Read more about this solution](https://github.com/nzigel/alexa-bridge/)
+
 I have enjoyed collecting data and building this passion project out over the last four years. There is a lot of moving parts but it certainly helps me now stay healthy and gain insight into my personal state of well being. I'm facinated to learn how you have taken this work and applied it to your own data and your own data and your own health journey.
