@@ -122,8 +122,13 @@ function dateRngChk(er,ent){
 
 function setFieldOperatorType (er, ent) {
 
-    var ftStr = chkEnt(er,ent,'distance')?'distance':chkEnt(er,ent,'floors')?'floors':chkEnt(er,ent,'sleep')?'sleepDuration':chkEnt(er,ent,'beers')?'beers':chkEnt(er,ent,'weight')?'weight':chkEnt(er,ent,'vo2max')?'VO2MAX':'*';
+    var ftStr = chkEnt(er,ent,'distance')?'distance':chkEnt(er,ent,'floors')?'floors':chkEnt(er,ent,'sleep')?'sleepDuration':chkEnt(er,ent,'beers')?'beers':chkEnt(er,ent,'weight')?'weight':chkEnt(er,ent,'vo2max')?'VO2MAX':chkEnt(er,ent,'steps')?'steps':'*';
     var opType = chkEnt(er,ent,'average')?'AVG':chkEnt(er,ent,'least')?'MIN':chkEnt(er,ent,'most')?'MAX':chkEnt(er,ent,'count')?'SUM':'*';
+
+    if ((chkEnt(er,ent,'activeMinutes'))||(chkEnt(er,ent,'activeMinutes::moderateActiveMinutes'))||(chkEnt(er,ent,'activeMinutes::veryActiveMinutes'))) {
+        // check for vigourIntensity and moderateIntensity minutes
+        ftStr = chkEnt(er,ent,'activeMinutes::moderateActiveMinutes')?'moderateIntensityMins':chkEnt(er,ent,'activeMinutes::veryActiveMinutes')?'vigourousIntensityMinutes':chkEnt(er,ent,'activeMinutes')?'activeMinutes':'*';
+    }
 
     if ((chkEnt(er,ent,'heartRate::minHeartRate'))||(chkEnt(er,ent,'heartRate::maxHeartRate'))||(chkEnt(er,ent,'heartRate::restingHeartRate'))) {
         ftStr = chkEnt(er,ent,'heartRate::minHeartRate')?'minHeartRate':chkEnt(er,ent,'heartRate::maxHeartRate')?'maxHeartRate':chkEnt(er,ent,'heartRate::restingHeartRate')?'restHeartRate':'*';
@@ -145,10 +150,6 @@ function setFieldOperatorType (er, ent) {
         // check for when sick
         ftStr = 'virus';
         opType = '*'; // set op type as * so all the documents when virus are returned for selected date range
-    }
-    else if (ftStr == '*') {
-        // check for vigourIntensity and moderateIntensity minutes
-        ftStr = chkEnt(er,ent,'activeMinutes::veryActiveMinutes')?'vigourousIntensityMinutes':chkEnt(er,ent,'activeMinutes::moderateActiveMinutes')?'moderateIntensityMins':'*';
     }
     else if ((opType == '*')&&(ftStr=='weight')) {
         // we have a weight check for heaviest and lightest for max and min operators
@@ -181,12 +182,19 @@ module.exports = {
 
         var qObj = setFieldOperatorType(er,ent);
         var ft = qObj.ftStr;
+
         var op = qObj.opType;
 
         var dayQuery = dayChk(er,ent);
         var dateQuery = dateRngChk(er,ent);
         var whereQuery = ((dayQuery!='')&&(dateQuery!=''))?`WHERE (${dayQuery}) and (${dateQuery})`:(dayQuery!='')?`WHERE ${dayQuery}`:(dateQuery!='')?`WHERE ${dateQuery}`:'';
         var operatorStr = (op=='*')?'*':`${op}(c.${ft})`;
+
+        if ((operatorStr != '*')&&(ft == 'activeMinutes')) {
+            // for active minutes sum moderate and vigourouse minutes together before performing the operation
+            operatorStr = `${op}(c.moderateIntensityMins+c.vigourousIntensityMinutes)`
+        }
+
         var orderByStr = '';
 
         if ((op=='MIN')||(op=='MAX')) {
@@ -194,6 +202,11 @@ module.exports = {
 
              var orderStr = (op=='MAX')? 'desc': 'asc'; // for max order descending for min order ascending by the field type selected
 
+             if (ft == 'activeMinutes') {
+                 // we can add moderate minutes to intense minutes in the order by clause in cosmos DB take
+                 // vigourous minutes as the indication of total active minutes in this case
+                ft = 'vigourousIntensityMinutes'
+             } 
              operatorStr = 'TOP 1 *';
              orderByStr = ` ORDER BY (c.${ft}) ${orderStr}`;
         }
@@ -245,10 +258,18 @@ module.exports = {
                         sickStr = "I predicted you were not sick with "+(100-((val.score) | 0))+"% confidence. You said you were "+((val.virus=='N')?"not ":"")+"sick.";
                     }
 
+                
+                // log the date that the event took place
+                // "2018-01-01T00:00:00.0000000Z" is UTC date so could be turned into a date string the day before depending on user timezone
+                eventDate = (new Date(val.dateLogged));
+                // increase the time by local timzone offset so when it is turned into a date string it doesn't go back a day in some timezones
+                eventDate.setMinutes(eventDate.getMinutes() + eventDate.getTimezoneOffset());
+                dateStr = eventDate.toDateString();
+
                     cardMsg.addAttachment(
                         new builder.HeroCard(session)
                                 .title(titleStr)
-                                .subtitle((new Date(val.dateLogged)).toDateString())
+                                .subtitle(dateStr)
                                 .text(sickStr)
                     );
                 }, this);
@@ -277,8 +298,13 @@ module.exports = {
             if ((op=='MIN')||(op=='MAX')||(op=='*')) {
                 // we have a min, max or count event
 
-                dateStr = (new Date(val.dateLogged)).toDateString();
+                //dateStr = (new Date(val.dateLogged)).toDateString();
                 // log the date that the event took place
+                // "2018-01-01T00:00:00.0000000Z" is UTC date so could be turned into a date string the day before depending on user timezone
+                eventDate = (new Date(val.dateLogged));
+                // increase the time by local timzone offset so when it is turned into a date string it doesn't go back a day in some timezones
+                eventDate.setMinutes(eventDate.getMinutes() + eventDate.getTimezoneOffset());
+                dateStr = eventDate.toDateString();
 
                 // update val to the appropriate field type
                 switch (ft) {
@@ -289,9 +315,12 @@ module.exports = {
                     case 'maxHeartRate': val = val.maxHeartRate; break;
                     case 'restHeartRate': val = val.restHeartRate; break;
                     case 'vigourousIntensityMinutes' : val = val.vigourousIntensityMinutes; break;
+                    case 'moderateIntensityMins' : val = val.moderateIntensityMins; break;
+                    case 'activeMinutes' : val = (val.vigourousIntensityMinutes+val.moderateIntensityMins); break;
                     case 'beers': val = val.beers; break;
                     case 'weight': val = val.weight; break;
                     case 'VO2MAX': val = val.VO2MAX; break;
+                    case 'steps': val = val.steps; break;
                 }
             }
         }
@@ -329,15 +358,20 @@ module.exports = {
                     var intStr = val.toFixed(0);
                     var avgStr = `on average you`;
                     var dayStr = ` per day`;
+                    var exStr = (ft=='vigourousIntensityMinutes')? ` intensly`: ((ft=='moderateIntensityMins')? ` moderately`:``);
+                    var exTotalStr = (ft=='vigourousIntensityMinutes')? ` intense`: ((ft=='moderateIntensityMins')? ` moderate`:``);
                     
                     switch (ft) {
                         case 'distance': rStr=((op=='MIN')||(op=='MAX'))?`you travelled ${valStr} kms on ${dateStr}`:(op=='AVG')?`${avgStr} travelled ${valStr} kms${dayStr}`:`total distance: ${valStr} kms`; break;
+                        case 'steps': rStr=((op=='MIN')||(op=='MAX'))?`you took ${intStr} steps on ${dateStr}`:(op=='AVG')?`${avgStr} you took ${intStr} steps${dayStr}`:`total steps: ${intStr}`; break;
                         case 'floors': rStr=((op=='MIN')||(op=='MAX'))?`you climbed ${intStr} floors on ${dateStr}`:(op=='AVG')?`${avgStr} climbed ${intStr} floors${dayStr}`:`total floors climbed: ${intStr}`; break;
                         case 'sleepDuration': rStr=((op=='MIN')||(op=='MAX'))?`you slept ${valStr} hours on ${dateStr}`:(op=='AVG')?`${avgStr} got ${valStr} hours sleep${dayStr}`:`total sleep: ${valStr} hours`; break;
                         case 'minHeartRate': rStr=((op=='MIN')||(op=='MAX'))?`${intStr} bpm on ${dateStr}`:(op=='AVG')?`${avgStr}r lowest heart rate was ${intStr} bpm${dayStr}`:`lowest heart rate: ${intStr} bpm`; break;
                         case 'maxHeartRate': rStr=((op=='MIN')||(op=='MAX'))?`${intStr} bpm on ${dateStr}`:(op=='AVG')?`${avgStr}r highest heart rate was ${intStr} bpm${dayStr}`:`highest heart rate: ${intStr} bpm`; break;
                         case 'restHeartRate': rStr=((op=='MIN')||(op=='MAX'))?`${intStr} bpm on ${dateStr}`:(op=='AVG')?`${avgStr}r resting heart rate was ${intStr} bpm${dayStr}`:`resting heart rate: ${intStr} bpm`; break;
-                        case 'vigourousIntensityMinutes': rStr=((op=='MIN')||(op=='MAX'))?`you exercised intensly for ${intStr} minutes on ${dateStr}`:(op=='AVG')?`${intStr}exercised intensly for ${intStr} minutes${dayStr}`:(dateStr!='')?`you exercised intensly for ${intStr} minutes on ${dateStr}`:`total minutes of intense exercise: ${intStr}`; break;
+                        case 'vigourousIntensityMinutes': 
+                        case 'activeMinutes': 
+                        case 'moderateIntensityMins': rStr=((op=='MIN')||(op=='MAX'))?`you exercised${exStr} for ${intStr} minutes on ${dateStr}`:(op=='AVG')?`you exercised${exStr} for ${intStr} minutes${dayStr}`:(dateStr!='')?`you exercised${exStr} for ${intStr} minutes on ${dateStr}`:`total minutes of${exTotalStr} exercise: ${intStr}`; break;
                         case 'beers': rStr=((op=='MIN')||(op=='MAX'))?`you drank ${intStr} beers on ${dateStr}`:(op=='AVG')?`${avgStr} drank ${intStr} beers${dayStr}`:`total beers: ${intStr}`; break;
                         case 'VO2MAX': rStr=((op=='MIN')||(op=='MAX'))?`your VO2MAX was ${intStr} on ${dateStr}`:(op=='AVG')?`${avgStr}r VO2MAX was ${intStr}`:``; break; // counting VO2MAX doesn't make sense
                         case 'weight': rStr=((op=='MIN')||(op=='MAX'))?`your weight was ${intStr} kg on ${dateStr}`:(op=='AVG')?`${avgStr}r weight was ${intStr}kg`:``; break; // counting weight doesn't make sense

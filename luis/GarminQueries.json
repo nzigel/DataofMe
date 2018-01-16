@@ -65,6 +65,9 @@
       "name": "sleep"
     },
     {
+      "name": "steps"
+    },
+    {
       "name": "virus"
     },
     {
@@ -79,7 +82,6 @@
   "bing_entities": [
     "datetimeV2"
   ],
-  "actions": [],
   "model_features": [
     {
       "name": "Beers",
@@ -126,7 +128,7 @@
     {
       "name": "Sick",
       "mode": true,
-      "words": "sick,virus,unwell,rundown,fatigued,lethargic,ill,syk,uvel",
+      "words": "sick,virus,unwell,rundown,fatigued,lethargic,ill,syk,uvel,under the weather,stressed,run down,stress",
       "activated": true
     },
     {
@@ -1186,6 +1188,690 @@
           "entity": "most",
           "startPos": 12,
           "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "what was my highest lowest heart rate this year",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "most",
+          "startPos": 12,
+          "endPos": 18
+        },
+        {
+          "entity": "heartRate::minHeartRate",
+          "startPos": 20,
+          "endPos": 36
+        }
+      ]
+    },
+    {
+      "text": "what was my lowest max heart rate this year",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "heartRate::maxHeartRate",
+          "startPos": 19,
+          "endPos": 32
+        },
+        {
+          "entity": "least",
+          "startPos": 12,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "what is my average heart rate last week",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "average",
+          "startPos": 11,
+          "endPos": 17
+        },
+        {
+          "entity": "heartRate::restingHeartRate",
+          "startPos": 19,
+          "endPos": 28
+        }
+      ]
+    },
+    {
+      "text": "on average how much exercise did i get last month",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "average",
+          "startPos": 3,
+          "endPos": 9
+        },
+        {
+          "entity": "activeMinutes",
+          "startPos": 20,
+          "endPos": 27
+        },
+        {
+          "entity": "count",
+          "startPos": 11,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "when did i get the most exercise last week",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "most",
+          "startPos": 19,
+          "endPos": 22
+        },
+        {
+          "entity": "activeMinutes",
+          "startPos": 24,
+          "endPos": 31
+        }
+      ]
+    },
+    {
+      "text": "how many active minutes did i have last week",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "activeMinutes",
+          "startPos": 9,
+          "endPos": 22
+        },
+        {
+          "entity": "count",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "on average how many active minutes did i get last month",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "average",
+          "startPos": 3,
+          "endPos": 9
+        },
+        {
+          "entity": "activeMinutes",
+          "startPos": 20,
+          "endPos": 33
+        },
+        {
+          "entity": "count",
+          "startPos": 11,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "how much intense exercise did i get last week",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "activeMinutes::veryActiveMinutes",
+          "startPos": 9,
+          "endPos": 24
+        },
+        {
+          "entity": "count",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "when did i last go for a run?",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "last",
+          "startPos": 11,
+          "endPos": 14
+        },
+        {
+          "entity": "activeMinutes::veryActiveMinutes",
+          "startPos": 25,
+          "endPos": 27
+        }
+      ]
+    },
+    {
+      "text": "how many steps did i take last night",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "steps",
+          "startPos": 9,
+          "endPos": 13
+        },
+        {
+          "entity": "latest",
+          "startPos": 26,
+          "endPos": 35
+        },
+        {
+          "entity": "count",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "what was my average very active minutes last month",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "average",
+          "startPos": 12,
+          "endPos": 18
+        },
+        {
+          "entity": "activeMinutes::veryActiveMinutes",
+          "startPos": 20,
+          "endPos": 38
+        }
+      ]
+    },
+    {
+      "text": "when did i drink the most beers during the week in september 2017",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "beers",
+          "startPos": 26,
+          "endPos": 30
+        },
+        {
+          "entity": "most",
+          "startPos": 21,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "how many beers did i have on weekdays this year",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "beers",
+          "startPos": 9,
+          "endPos": 13
+        },
+        {
+          "entity": "dayoftheweek",
+          "startPos": 29,
+          "endPos": 36
+        },
+        {
+          "entity": "count",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "what was my highest resting heart rate this week",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "most",
+          "startPos": 12,
+          "endPos": 18
+        },
+        {
+          "entity": "heartRate::restingHeartRate",
+          "startPos": 20,
+          "endPos": 37
+        }
+      ]
+    },
+    {
+      "text": "on average how many beers did i have on tuesday or wednesday last month",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "average",
+          "startPos": 3,
+          "endPos": 9
+        },
+        {
+          "entity": "beers",
+          "startPos": 20,
+          "endPos": 24
+        },
+        {
+          "entity": "count",
+          "startPos": 11,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "how far did i run in april",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "count",
+          "startPos": 0,
+          "endPos": 2
+        },
+        {
+          "entity": "distance",
+          "startPos": 4,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "how many beers did i drink on the weekend last year",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "beers",
+          "startPos": 9,
+          "endPos": 13
+        },
+        {
+          "entity": "count",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "how many flights of stairs i climbed today",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "floors",
+          "startPos": 9,
+          "endPos": 25
+        },
+        {
+          "entity": "count",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "on average how many beers have i had this week",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "average",
+          "startPos": 3,
+          "endPos": 9
+        },
+        {
+          "entity": "beers",
+          "startPos": 20,
+          "endPos": 24
+        },
+        {
+          "entity": "count",
+          "startPos": 11,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "how far did i go on the weekend last week",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "count",
+          "startPos": 0,
+          "endPos": 2
+        },
+        {
+          "entity": "distance",
+          "startPos": 4,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "da var jeg syk i 2017",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "virus",
+          "startPos": 11,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "on average how many steps did i take last week",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "steps",
+          "startPos": 20,
+          "endPos": 24
+        },
+        {
+          "entity": "average",
+          "startPos": 3,
+          "endPos": 9
+        },
+        {
+          "entity": "count",
+          "startPos": 11,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "on average how many moderately active minutes did i have last month?",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "average",
+          "startPos": 3,
+          "endPos": 9
+        },
+        {
+          "entity": "activeMinutes::moderateActiveMinutes",
+          "startPos": 20,
+          "endPos": 44
+        },
+        {
+          "entity": "count",
+          "startPos": 11,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "how long did i spend exercising last week",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "activeMinutes",
+          "startPos": 21,
+          "endPos": 30
+        },
+        {
+          "entity": "count",
+          "startPos": 4,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "on average how much time did i spend exercising last week?",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "average",
+          "startPos": 3,
+          "endPos": 9
+        },
+        {
+          "entity": "activeMinutes",
+          "startPos": 37,
+          "endPos": 46
+        },
+        {
+          "entity": "count",
+          "startPos": 11,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "on average how much exercise did i get last week",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "average",
+          "startPos": 3,
+          "endPos": 9
+        },
+        {
+          "entity": "activeMinutes",
+          "startPos": 20,
+          "endPos": 27
+        },
+        {
+          "entity": "count",
+          "startPos": 11,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "how much exercise did i get last week",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "activeMinutes",
+          "startPos": 9,
+          "endPos": 16
+        },
+        {
+          "entity": "count",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "how much time did i spend running last week",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "activeMinutes::veryActiveMinutes",
+          "startPos": 26,
+          "endPos": 32
+        },
+        {
+          "entity": "count",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "on average how much did i run last week",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "average",
+          "startPos": 3,
+          "endPos": 9
+        },
+        {
+          "entity": "activeMinutes::veryActiveMinutes",
+          "startPos": 26,
+          "endPos": 28
+        },
+        {
+          "entity": "count",
+          "startPos": 11,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "how many steps did i get on average last week",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "steps",
+          "startPos": 9,
+          "endPos": 13
+        },
+        {
+          "entity": "average",
+          "startPos": 28,
+          "endPos": 34
+        },
+        {
+          "entity": "count",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "on average how much moderate exercise did i get last week",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "average",
+          "startPos": 3,
+          "endPos": 9
+        },
+        {
+          "entity": "activeMinutes::moderateActiveMinutes",
+          "startPos": 20,
+          "endPos": 36
+        },
+        {
+          "entity": "count",
+          "startPos": 11,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "how much moderate exercise did i get last month",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "activeMinutes::moderateActiveMinutes",
+          "startPos": 9,
+          "endPos": 25
+        },
+        {
+          "entity": "count",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "when did i get the most exercise this year",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "most",
+          "startPos": 19,
+          "endPos": 22
+        },
+        {
+          "entity": "activeMinutes",
+          "startPos": 24,
+          "endPos": 31
+        }
+      ]
+    },
+    {
+      "text": "when did i run the longest this year",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "most",
+          "startPos": 19,
+          "endPos": 25
+        },
+        {
+          "entity": "activeMinutes::veryActiveMinutes",
+          "startPos": 11,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "when did i exercise the most vigorously this year",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "most",
+          "startPos": 24,
+          "endPos": 27
+        },
+        {
+          "entity": "activeMinutes::veryActiveMinutes",
+          "startPos": 29,
+          "endPos": 38
+        }
+      ]
+    },
+    {
+      "text": "when did i get the most exercise last month",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "most",
+          "startPos": 19,
+          "endPos": 22
+        },
+        {
+          "entity": "activeMinutes",
+          "startPos": 24,
+          "endPos": 31
+        }
+      ]
+    },
+    {
+      "text": "when did i get the most vigourous exercise this year",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "most",
+          "startPos": 19,
+          "endPos": 22
+        },
+        {
+          "entity": "activeMinutes::veryActiveMinutes",
+          "startPos": 24,
+          "endPos": 41
+        }
+      ]
+    },
+    {
+      "text": "what is the most steps i took last week",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "steps",
+          "startPos": 17,
+          "endPos": 21
+        },
+        {
+          "entity": "most",
+          "startPos": 12,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "what is the least steps that i took last week",
+      "intent": "GetGarminData",
+      "entities": [
+        {
+          "entity": "steps",
+          "startPos": 18,
+          "endPos": 22
+        },
+        {
+          "entity": "least",
+          "startPos": 12,
+          "endPos": 16
         }
       ]
     }
